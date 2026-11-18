@@ -117,7 +117,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
       <div class="form">
         <label for="f-name">Full name<input id="f-name" type="text" autocomplete="name" placeholder="Your full name"></label>
         <label for="f-title">Job title<input id="f-title" type="text" autocomplete="organization-title" placeholder="Your job title"></label>
-        <label for="f-div"><span>Division or unit <span class="opt">(optional)</span></span><input id="f-div" type="text" autocomplete="off" placeholder="For example: Human Resources"></label>
+        <label for="f-div">Division or unit<input id="f-div" type="text" autocomplete="off" placeholder="For example: Human Resources"></label>
         <div class="pair">
           <label for="f-mobile"><span>Mobile (M) <span class="opt">(optional)</span></span><input id="f-mobile" type="text" inputmode="tel" autocomplete="tel" placeholder="+686"></label>
           <label for="f-office">Office (O)<input id="f-office" type="text" inputmode="tel" autocomplete="off" placeholder="+686"></label>
@@ -208,7 +208,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
 
     var t = '<div style="' + F + 'font-size:16px;line-height:21px;font-weight:bold;">' + c(NAVY, esc(name)) + '</div>' +
       '<div style="' + F + 'font-size:12px;line-height:18px;font-weight:bold;">' + c(RED, esc(title)) + '</div>' +
-      (d.div ? '<div style="' + F + 'font-size:12px;line-height:18px;">' + c(SLATE, esc(d.div)) + '</div>' : '') +
+      '<div style="' + F + 'font-size:12px;line-height:18px;">' + c(SLATE, esc(d.div || 'Your division or unit')) + '</div>' +
       '<div style="' + F + 'font-size:12px;line-height:18px;font-weight:bold;padding-bottom:6px;">' + c(NAVY, 'Ministry of Education') + c(PIPE, '&nbsp;&nbsp;|&nbsp;&nbsp;', 'font-weight:normal;') + c(NAVY, 'Government of Kiribati') + '</div>' +
       '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">' + rows + '</table>';
 
@@ -304,7 +304,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
   document.getElementById('btn-sig').addEventListener('click', function () {
     var d = data(), st = document.getElementById('st-sig');
     say(st, '', '');
-    if (!d.name || !d.title || !d.email) { say(st, 'Please type your name, job title and MOE email first.', 'bad'); return; }
+    if (!d.name || !d.title || !d.div || !d.email) { say(st, 'Please type your name, job title, division and MOE email first.', 'bad'); return; }
     copyHTML(sigHTML(d, true), plainLines(d).join('\n'), st, document.getElementById('btn-sig').closest('section'));
   });
   document.getElementById('btn-phone').addEventListener('click', function () {
