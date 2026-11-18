@@ -124,6 +124,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
         </div>
         <label for="f-email">MOE email (E)<input id="f-email" type="text" inputmode="email" autocomplete="email" placeholder="name@moe.gov.ki">
           <span class="hint" id="email-hint" hidden>Use your MOE email, ending in @moe.gov.ki.</span></label>
+        <label for="f-quote"><span>Quote or Bible verse <span class="opt">(optional)</span></span><input id="f-quote" type="text" maxlength="140" autocomplete="off" placeholder="Your favourite quote or Bible verse"><span class="opt" style="font-size:13.5px;">One short line. It shows in italics at the bottom of your signature.</span></label>
       </div>
     </section>
 
@@ -174,7 +175,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
   var PLACEHOLDER = '<span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;color:#999999;">MOE LOGO</span>';
   var NAVY = '#1F3864', RED = '#C00000', SLATE = '#3A4658', INK = '#2A3A50', GREY = '#5F6B7A', PIPE = '#9AA3AF';
   var F = 'font-family:Arial,Helvetica,sans-serif;';
-  var ids = ['name', 'title', 'div', 'mobile', 'office', 'email'];
+  var ids = ['name', 'title', 'div', 'mobile', 'office', 'email', 'quote'];
   var KEY = 'moe-staff-signature';
 
   document.getElementById('preview-note').hidden = HOSTED;
@@ -231,6 +232,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
     '<td align="right" style="text-align:right;' + F + 'font-size:10.5px;line-height:15px;font-weight:bold;"><a href="https://www.moe.gov.ki" style="color:' + NAVY + ';text-decoration:none;">' + c(NAVY, 'www.moe.gov.ki') + '</a></td>' +
   '</tr></table></td></tr>' +
   '<tr><td colspan="2" style="padding:1px 0 0 0;' + F + 'font-size:10.5px;line-height:15px;">' + c(GREY, 'P.O. Box 263, Bikenibeu, Tarawa, Kiribati') + '</td></tr>' +
+  (d.quote ? '<tr><td colspan="2" style="padding:6px 0 0 0;' + F + 'font-size:11px;line-height:16px;font-style:italic;">' + c('#55606F', esc(d.quote), 'font-style:italic;') + '</td></tr>' : '') +
 '</table>';
   }
 
@@ -241,6 +243,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
     if (d.mobile) l.push('M ' + d.mobile);
     if (d.office) l.push('O ' + d.office);
     if (d.email) l.push('E ' + d.email);
+    if (d.quote) l.push(d.quote);
     return l.filter(Boolean);
   }
 
