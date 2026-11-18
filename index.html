@@ -24,6 +24,8 @@
   --ok: #1d7146;
   --warn-bg: #fff6e0;
   --warn-ink: #6b4a00;
+  --ok-bg: #e4f4ea;
+  --ok-ink: #145c36;
   --field: #f7f9fc;
   --paper: #ffffff;
   --font-head: "Lexend", "Segoe UI", Arial, sans-serif;
@@ -33,14 +35,14 @@
   :root:not([data-theme="light"]) {
     --bg: #0d1320; --surface: #161e2e; --ink: #e6eaf2; --muted: #9ea8bb; --line: #2a3550;
     --navy: #18284a; --on-navy: #ffffff; --accent: #a9bff0; --on-accent: #0d1320;
-    --mark: #ff7d7d; --ok: #74d6a0; --warn-bg: #3a3018; --warn-ink: #f1d79a; --field: #0f1726; --paper: #ffffff;
+    --mark: #ff7d7d; --ok: #74d6a0; --warn-bg: #3a3018; --warn-ink: #f1d79a; --ok-bg: #173527; --ok-ink: #a8e6c3; --field: #0f1726; --paper: #ffffff;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0d1320; --surface: #161e2e; --ink: #e6eaf2; --muted: #9ea8bb; --line: #2a3550;
   --navy: #18284a; --on-navy: #ffffff; --accent: #a9bff0; --on-accent: #0d1320;
-  --mark: #ff7d7d; --ok: #74d6a0; --warn-bg: #3a3018; --warn-ink: #f1d79a; --field: #0f1726; --paper: #ffffff;
+  --mark: #ff7d7d; --ok: #74d6a0; --warn-bg: #3a3018; --warn-ink: #f1d79a; --ok-bg: #173527; --ok-ink: #a8e6c3; --field: #0f1726; --paper: #ffffff;
   color-scheme: dark;
 }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
@@ -65,8 +67,8 @@ body { background: var(--bg); color: var(--ink); font-family: var(--font-body); 
 .form { display: flex; flex-direction: column; gap: 12px; }
 .form label { display: flex; flex-direction: column; gap: 5px; font-weight: 600; font-size: 14.5px; }
 .form .opt { font-weight: 400; color: var(--muted); }
-.form input { font: 16px/1.3 var(--font-body); color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 6px; padding: 11px 12px; width: 100%; box-sizing: border-box; min-width: 0; }
-.form input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.form input, .form select { font: 16px/1.3 var(--font-body); color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 6px; padding: 11px 12px; width: 100%; box-sizing: border-box; min-width: 0; }
+.form input:focus-visible, .form select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
 .form .hint { font-weight: 600; font-size: 13.5px; color: var(--mark); }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 420px) { .pair { grid-template-columns: 1fr; } }
@@ -78,7 +80,8 @@ button.big { font: 700 16px/1 var(--font-body); color: #ffffff; background: #C00
 button.big:hover { filter: brightness(1.08); }
 button.big:focus-visible, button.small:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 button.small { font: 700 15px/1 var(--font-body); color: var(--on-accent); background: var(--accent); border: 0; border-radius: 6px; padding: 11px 16px; cursor: pointer; }
-.status { font-size: 15px; color: var(--muted); min-height: 1.4em; }
+button.small.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+.status { margin: 0; font-size: 15px; color: var(--muted); min-height: 1.4em; }
 .status.ok { color: var(--ok); font-weight: 700; }
 .status.bad { color: var(--mark); font-weight: 700; }
 
@@ -90,6 +93,34 @@ ol.steps .why { display: block; color: var(--muted); font-size: 14.5px; margin-t
 .k { font-family: Consolas, "Courier New", monospace; font-size: 14px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 4px; background: var(--field); white-space: nowrap; }
 pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px solid var(--line); border-radius: 6px; font: 15px/1.6 Consolas, "Courier New", monospace; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
 .help { color: var(--muted); font-size: 15px; text-align: center; }
+.fallback { margin: 0; font-size: 15px; color: var(--muted); }
+.fallback a { color: var(--accent); font-weight: 700; }
+.gate { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; border-radius: 8px; padding: 14px 16px; font-size: 16px; }
+.gate.wait { background: var(--warn-bg); color: var(--warn-ink); }
+.gate.done { background: var(--ok-bg); color: var(--ok-ink); }
+.gate-msg { flex: 1 1 260px; min-width: 0; }
+.gate.done .gate-btn { display: none; }
+button.gate-btn { font: 700 15px/1 var(--font-body); color: #ffffff; background: #C00000; border: 0; border-radius: 8px; padding: 12px 16px; cursor: pointer; }
+button.gate-btn:focus-visible, button.small:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+ol.steps.abc > li::before { content: counter(s, upper-alpha); }
+.gate.wait + ol.steps { opacity: .55; }
+.g { display: inline-block; font: 600 14px/1 Arial, Helvetica, sans-serif; padding: 6px 12px; border-radius: 18px; white-space: nowrap; vertical-align: 1px; }
+.g-new { background: #ffffff; color: #0b57d0; border: 1px solid #747775; }
+.g-text { background: #ffffff; color: #0b57d0; border: 1px solid #d3d6db; border-radius: 4px; }
+.g-save { background: #e9eef6; color: #1f1f1f; border: 1px solid #c4c7c5; border-radius: 4px; }
+.gpanel { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 6px; padding: 12px 14px; background: #ffffff; border: 1px solid #d3d6db; border-radius: 8px; color: #1f1f1f; max-width: 560px; }
+.grow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.glabel { font: 14px/1.35 Arial, Helvetica, sans-serif; color: #1f1f1f; min-width: 0; }
+.grow .glabel:first-child { min-width: 150px; }
+.grow.chk { flex-wrap: nowrap; align-items: flex-start; }
+.grow.chk .g-check { margin-top: 1px; }
+.g-select { background: #ffffff; color: #1f1f1f; border: 1px solid #747775; border-radius: 4px; padding: 6px 30px 6px 10px; position: relative; }
+.g-select::after { content: ""; position: absolute; right: 10px; top: 50%; margin-top: -2px; border: 5px solid transparent; border-top-color: #444746; }
+.g-check { flex: none; width: 16px; height: 16px; border-radius: 3px; background: #0b57d0; position: relative; }
+.g-check::after { content: ""; position: absolute; left: 5px; top: 1px; width: 4px; height: 9px; border: solid #ffffff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.form .missing { border-color: #C00000 !important; box-shadow: 0 0 0 2px rgba(192,0,0,.15); }
+@media (min-width: 1600px) { body { zoom: 1.2; } }
+@media (min-width: 2200px) { body { zoom: 1.45; } }
 #copy-holder { position: absolute; left: -10000px; top: 0; background: #ffffff; color: #222222; }
 #copy-holder.show { position: static; left: auto; padding: 12px; border: 2px dashed #C00000; overflow-x: auto; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -117,7 +148,9 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
       <div class="form">
         <label for="f-name">Full name<input id="f-name" type="text" autocomplete="name" placeholder="Your full name"></label>
         <label for="f-title">Job title<input id="f-title" type="text" autocomplete="organization-title" placeholder="Your job title"></label>
-        <label for="f-div">Division or unit<input id="f-div" type="text" autocomplete="off" placeholder="For example: Human Resources"></label>
+        <label for="f-div">Division or unit<input id="f-div" type="text" autocomplete="off" placeholder="For example: Technology Support &amp; Information Management Unit (TSIMU)"><span class="opt" style="font-size:13.5px;">Write the full name, for example: Technology Support &amp; Information Management Unit (TSIMU)</span></label>
+        <label for="f-loc">Office location<select id="f-loc"><option value="Bikenibeu">Bikenibeu, Tarawa (Ministry headquarters)</option><option value="Bairiki">Bairiki, Tarawa</option><option value="other">Somewhere else (type it below)</option></select></label>
+        <label for="f-locother" id="locother-wrap" hidden>Type your office location<input id="f-locother" type="text" autocomplete="off" placeholder="For example: Betio, Tarawa"><span class="opt" style="font-size:13.5px;">Kiribati is added at the end for you.</span></label>
         <div class="pair">
           <label for="f-mobile"><span>Mobile (M) <span class="opt">(optional)</span></span><input id="f-mobile" type="text" inputmode="tel" autocomplete="tel" placeholder="+686"></label>
           <label for="f-office">Office (O)<input id="f-office" type="text" inputmode="tel" autocomplete="off" placeholder="+686"></label>
@@ -126,30 +159,46 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
           <span class="hint" id="email-hint" hidden>Use your MOE email, ending in @moe.gov.ki.</span></label>
         <label for="f-quote"><span>Quote or Bible verse <span class="opt">(optional)</span></span><input id="f-quote" type="text" maxlength="140" autocomplete="off" placeholder="Your favourite quote or Bible verse"><span class="opt" style="font-size:13.5px;">One short line. It shows in italics at the bottom of your signature.</span></label>
       </div>
+      <div class="actions"><button class="small ghost" id="btn-clear" type="button">Clear and start again</button><span class="opt" style="font-size:13.5px;color:var(--muted);">Use this when helping another person on the same computer.</span></div>
     </section>
 
     <section class="card" aria-labelledby="h2-sig">
       <h2 id="h2-sig"><span class="num">2</span>Check and copy your signature</h2>
       <div class="paper"><div class="paper-in"><div id="sig-preview"></div></div></div>
       <div class="actions">
-        <button class="big" id="btn-sig" type="button">Copy my signature</button>
-        <span class="status" id="st-sig" role="status"></span>
+        <button class="big" id="btn-sig" type="button">Copy my signature and open Gmail</button>
       </div>
+      <p class="status" id="st-sig" role="status"></p>
+      <p class="fallback" id="fallback" hidden>Gmail did not open? <a id="open-gmail" href="https://mail.google.com/mail/u/0/#settings/general" target="_blank" rel="noopener">Click here to open Gmail settings</a>.</p>
     </section>
   </div>
 
   <section class="card" aria-labelledby="h3-gmail">
-    <h2 id="h3-gmail"><span class="num">3</span>Add it to Gmail on your computer</h2>
-    <ol class="steps">
-      <li><div class="t">Open Gmail. Click the <strong>gear icon</strong> at the top right, then <strong>See all settings</strong>.</div></li>
-      <li><div class="t">On the <strong>General</strong> tab, scroll down to <strong>Signature</strong>. Click <strong>Create new</strong>, type <span class="k">MOE</span> and click <strong>Create</strong>.</div></li>
-      <li><div class="t">Click inside the empty box and press <span class="k">Ctrl+V</span>. On a Mac press <span class="k">Cmd+V</span>.</div></li>
+    <h2 id="h3-gmail"><span class="num">3</span>Paste it in Gmail</h2>
+    <div class="gate wait" id="gate">
+      <div class="gate-msg" id="gate-msg">First click the red button <strong>Copy my signature and open Gmail</strong> in step 2.</div>
+      <button class="gate-btn" id="btn-gate" type="button">Copy my signature and open Gmail</button>
+    </div>
+    <ol class="steps abc" id="gmail-steps">
+      <li><div class="t">In Gmail, scroll down to <strong>Signature</strong>. Click <span class="g g-new">+ Create new</span>, type <span class="k">MOE</span> and click <span class="g g-text">Create</span>.
+        <span class="why">If Gmail shows your inbox instead, click the gear icon at the top right, then <strong>See all settings</strong>, and scroll down.</span></div></li>
+      <li><div class="t">Click inside the empty box and press <span class="k">Ctrl+V</span> to paste. On a Mac press <span class="k">Cmd+V</span>. Your signature and the logo appear.
+        <span class="why">Something else appeared? Delete it, come back to this page, click <strong>Copy again</strong> below, then paste again.</span></div></li>
       <li class="logo-step" hidden><div class="t">Add the logo: click in front of the words MOE LOGO, click the <strong>picture icon</strong>, choose <strong>Google Drive</strong>, pick <strong>MOE_Logo_Signature_90px.png</strong> and click <strong>Select</strong>. Delete the words MOE LOGO, then click the logo and choose <strong>Original size</strong>.</div></li>
-      <li><div class="t">Under <strong>Signature defaults</strong>, choose <strong>MOE</strong> for <strong>For new emails use</strong> and for <strong>On reply/forward use</strong>.</div></li>
-      <li><div class="t">Scroll to the very bottom of the page and click <strong>Save Changes</strong>.
+      <li><div class="t">Just below, under <strong>Signature defaults</strong>, set <strong>both</strong> boxes to <strong>MOE</strong>, so your signature goes on new emails <strong>and</strong> on replies:
+        <span class="gpanel">
+          <span class="grow"><span class="glabel">For new emails use</span><span class="g g-select">MOE</span></span>
+          <span class="grow"><span class="glabel">On reply/forward use</span><span class="g g-select">MOE</span></span>
+          <span class="grow chk"><span class="g-check" aria-hidden="true"></span><span class="glabel">Insert signature before quoted text in replies and remove the "--" line that precedes it</span></span>
+        </span>
+        Then tick the box shown above.
+        <span class="why">The tick puts your signature right under what you write in a reply, not at the bottom of the old messages.</span></div></li>
+      <li><div class="t">Scroll to the very bottom of the page and click <span class="g g-save">Save Changes</span>.
         <span class="why">Gmail does not keep your signature until you click Save Changes.</span></div></li>
-      <li><div class="t">Send a test email to yourself and check that the logo and your details show.</div></li>
+      <li><div class="t">Test it: send a new email to yourself, then open it and click <strong>Reply</strong>. Your signature must show in the new email <strong>and</strong> in the reply.
+        <span class="why">No signature in the reply? Go back to Signature defaults and check that <strong>On reply/forward use</strong> says MOE, then click Save Changes again.</span></div></li>
     </ol>
+    <div class="actions"><button class="small" id="btn-again" type="button">Copy again</button><span class="status" id="st-again" role="status"></span></div>
   </section>
 
   <section class="card" aria-labelledby="h4-phone">
@@ -175,7 +224,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
   var PLACEHOLDER = '<span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;color:#999999;">MOE LOGO</span>';
   var NAVY = '#1F3864', RED = '#C00000', SLATE = '#3A4658', INK = '#2A3A50', GREY = '#5F6B7A', PIPE = '#9AA3AF';
   var F = 'font-family:Arial,Helvetica,sans-serif;';
-  var ids = ['name', 'title', 'div', 'mobile', 'office', 'email', 'quote'];
+  var ids = ['name', 'title', 'div', 'loc', 'locother', 'mobile', 'office', 'email', 'quote'];
   var KEY = 'moe-staff-signature';
 
   document.getElementById('preview-note').hidden = HOSTED;
@@ -231,7 +280,7 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
     '<td style="' + F + 'font-size:10px;line-height:15px;font-weight:bold;letter-spacing:1.3px;">' + c(NAVY, 'EDUCATION IS EVERYONE&#8217;S BUSINESS', 'letter-spacing:1.3px;') + '</td>' +
     '<td align="right" style="text-align:right;' + F + 'font-size:10.5px;line-height:15px;font-weight:bold;"><a href="https://www.moe.gov.ki" style="color:' + NAVY + ';text-decoration:none;">' + c(NAVY, 'www.moe.gov.ki') + '</a></td>' +
   '</tr></table></td></tr>' +
-  '<tr><td colspan="2" style="padding:1px 0 0 0;' + F + 'font-size:10.5px;line-height:15px;">' + c(GREY, 'P.O. Box 263, Bikenibeu, Tarawa, Kiribati') + '</td></tr>' +
+  '<tr><td colspan="2" style="padding:1px 0 0 0;' + F + 'font-size:10.5px;line-height:15px;">' + c(GREY, esc(addressLine(d))) + '</td></tr>' +
   (d.quote ? '<tr><td colspan="2" style="padding:6px 0 0 0;' + F + 'font-size:11px;line-height:16px;font-style:italic;">' + c('#55606F', esc(d.quote), 'font-style:italic;') + '</td></tr>' : '') +
 '</table>';
   }
@@ -247,7 +296,19 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
     return l.filter(Boolean);
   }
 
+  /* The Ministry postal address belongs to headquarters at Bikenibeu. Offices elsewhere show their own place. */
+  function addressLine(d) {
+    if (d.loc === 'Bairiki') return 'Bairiki, Tarawa, Kiribati';
+    if (d.loc === 'other') {
+      var x = (d.locother || '').replace(/[\s,.]+$/, '');
+      if (!x) return 'Your office location, Kiribati';
+      return /kiribati$/i.test(x) ? x : x + ', Kiribati';
+    }
+    return 'P.O. Box 263, Bikenibeu, Tarawa, Kiribati';
+  }
+
   function render() {
+    document.getElementById('locother-wrap').hidden = val('loc') !== 'other';
     var d = data();
     document.getElementById('sig-preview').innerHTML = sigHTML(d, false);
     document.getElementById('phone-text').textContent = plainLines(d).join('\n') || 'Type your details in step 1.';
@@ -263,35 +324,114 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
     var el = document.getElementById('f-' + k);
     if (start[k]) el.value = start[k];
     el.addEventListener('input', render);
+    el.addEventListener('change', render);
   });
   render();
 
   function say(st, msg, kind) { st.textContent = msg; st.classList.toggle('ok', kind === 'ok'); st.classList.toggle('bad', kind === 'bad'); }
   function selectNode(node) { var r = document.createRange(); r.selectNodeContents(node); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); return s; }
 
-  function copyHTML(html, text, st, near) {
+  /* Copy the signature as formatted text. The synchronous way runs first so Gmail can open straight after. */
+  function syncCopyHTML(html) {
     var holder = document.getElementById('copy-holder');
-    function fallback() {
-      holder.classList.remove('show'); holder.innerHTML = html;
-      var s = selectNode(holder), ok = false;
-      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
-      if (ok) { s.removeAllRanges(); holder.innerHTML = ''; say(st, 'Copied. Now go to step 3.', 'ok'); }
-      else {
-        holder.classList.add('show'); holder.removeAttribute('aria-hidden'); near.appendChild(holder); selectNode(holder);
-        say(st, 'Your browser blocked the button. The signature below is selected: press Ctrl+C to copy it.', 'bad');
-      }
-    }
+    holder.classList.remove('show'); holder.innerHTML = html;
+    var s = selectNode(holder), ok = false;
+    try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+    s.removeAllRanges(); holder.innerHTML = '';
+    return ok;
+  }
+  function asyncCopyHTML(html, text) {
     try {
       if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
-        navigator.clipboard.write([new ClipboardItem({
+        return navigator.clipboard.write([new ClipboardItem({
           'text/html': new Blob([html], { type: 'text/html' }),
           'text/plain': new Blob([text], { type: 'text/plain' })
-        })]).then(function () { say(st, 'Copied. Now go to step 3.', 'ok'); }, fallback);
-        return;
+        })]);
       }
-    } catch (err) { /* use fallback */ }
-    fallback();
+    } catch (err) { /* fall through */ }
+    return Promise.reject(new Error('no clipboard'));
   }
+  function showManual(html) {
+    var holder = document.getElementById('copy-holder');
+    holder.innerHTML = html; holder.classList.add('show'); holder.removeAttribute('aria-hidden');
+    document.getElementById('btn-sig').closest('section').appendChild(holder); selectNode(holder);
+    say(document.getElementById('st-sig'), 'Your browser blocked the button. Your signature below is selected: press Ctrl+C to copy it, then go to Gmail.', 'bad');
+  }
+  function gmailURL(email) {
+    return /@moe\.gov\.ki$/i.test(email)
+      ? 'https://mail.google.com/mail/u/' + encodeURIComponent(email) + '/#settings/general'
+      : 'https://mail.google.com/mail/u/0/#settings/general';
+  }
+
+  var copied = false;
+  function setGate(done, msg) {
+    copied = done;
+    var g = document.getElementById('gate');
+    g.classList.toggle('done', done); g.classList.toggle('wait', !done);
+    document.getElementById('gate-msg').innerHTML = msg;
+  }
+  var WAIT_MSG = 'First click the red button <strong>Copy my signature and open Gmail</strong> in step 2.';
+  function markCopied(opened) {
+    setGate(true, '<strong>Your signature is copied.</strong> ' + (opened ? 'Gmail is opening in a new tab. Do these steps there:' : 'Now open Gmail and do these steps:'));
+    say(document.getElementById('st-sig'), opened ? 'Copied. Gmail is opening in a new tab. Follow step 3.' : 'Copied. Follow step 3.', 'ok');
+  }
+
+  var REQUIRED = ['name', 'title', 'div', 'email'];
+  function checkRequired() {
+    var missing = REQUIRED.filter(function (k) { return !val(k); });
+    if (val('loc') === 'other' && !val('locother')) missing.push('locother');
+    REQUIRED.concat(['locother']).forEach(function (k) { document.getElementById('f-' + k).classList.toggle('missing', missing.indexOf(k) >= 0); });
+    if (missing.length) {
+      say(document.getElementById('st-sig'), 'Please fill in the boxes marked in red in step 1 first.', 'bad');
+      document.getElementById('f-' + missing[0]).focus();
+      return false;
+    }
+    return true;
+  }
+
+  function copySignature(openGmail, st) {
+    st = st || document.getElementById('st-sig');
+    say(st, '', '');
+    if (!checkRequired()) return;
+    var d = data(), html = sigHTML(d, true), text = plainLines(d).join('\n');
+    var url = gmailURL(d.email);
+    document.getElementById('open-gmail').href = url;
+    var ok = syncCopyHTML(html);
+    var opened = false;
+    if (ok) {
+      if (openGmail) { var w = window.open(url, '_blank'); if (w) { try { w.opener = null; } catch (err) { /* ignore */ } } opened = !!w; document.getElementById('fallback').hidden = false; }
+      markCopied(opened);
+      if (st.id !== 'st-sig') say(st, 'Copied again. Paste it in Gmail.', 'ok');
+      return;
+    }
+    asyncCopyHTML(html, text).then(function () {
+      markCopied(false);
+      document.getElementById('fallback').hidden = false;
+      if (st.id !== 'st-sig') say(st, 'Copied again. Paste it in Gmail.', 'ok');
+    }, function () { showManual(html); });
+  }
+
+  document.getElementById('btn-sig').addEventListener('click', function () { copySignature(true); });
+  document.getElementById('btn-clear').addEventListener('click', function () {
+    ids.forEach(function (k) { var el = document.getElementById('f-' + k); el.value = k === 'loc' ? 'Bikenibeu' : ''; el.classList.remove('missing'); });
+    try { localStorage.removeItem(KEY); } catch (err) { /* browser storage is optional */ }
+    render();
+    setGate(false, 'First click the red button <strong>Copy my signature and open Gmail</strong> in step 2.');
+    say(document.getElementById('st-sig'), '', '');
+    document.getElementById('fallback').hidden = true;
+    document.getElementById('f-name').focus();
+  });
+  document.getElementById('btn-gate').addEventListener('click', function () { copySignature(true); });
+  document.getElementById('btn-again').addEventListener('click', function () { copySignature(false, document.getElementById('st-again')); });
+
+  /* If details change after copying, the copy in the clipboard is old: ask for a fresh copy. */
+  ids.forEach(function (k) {
+    document.getElementById('f-' + k).addEventListener('input', function () {
+      document.getElementById('f-' + k).classList.remove('missing');
+      if (copied) setGate(false, 'You changed your details. Click <strong>Copy my signature and open Gmail</strong> again before you paste.');
+    });
+  });
+
   function copyText(text, st, el) {
     function fallback() {
       var s = selectNode(el), ok = false;
@@ -304,12 +444,6 @@ pre.plain { margin: 0; padding: 14px 16px; background: var(--field); border: 1px
     } else { fallback(); }
   }
 
-  document.getElementById('btn-sig').addEventListener('click', function () {
-    var d = data(), st = document.getElementById('st-sig');
-    say(st, '', '');
-    if (!d.name || !d.title || !d.div || !d.email) { say(st, 'Please type your name, job title, division and MOE email first.', 'bad'); return; }
-    copyHTML(sigHTML(d, true), plainLines(d).join('\n'), st, document.getElementById('btn-sig').closest('section'));
-  });
   document.getElementById('btn-phone').addEventListener('click', function () {
     var d = data(), st = document.getElementById('st-phone');
     say(st, '', '');
