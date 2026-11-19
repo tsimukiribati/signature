@@ -534,7 +534,7 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
   }
   function gmailURL(email) {
     return /@moe\.gov\.ki$/i.test(email)
-      ? 'https://mail.google.com/mail/u/' + encodeURIComponent(email) + '/#settings/general'
+      ? 'https://mail.google.com/mail/u/0/?authuser=' + encodeURIComponent(email) + '#settings/general'
       : 'https://mail.google.com/mail/u/0/#settings/general';
   }
 
