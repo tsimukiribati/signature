@@ -183,7 +183,8 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
       <div class="form">
         <label for="f-name">Full name<input id="f-name" type="text" autocomplete="name" placeholder="Your full name"></label>
         <label for="f-title">Job title<input id="f-title" type="text" autocomplete="organization-title" placeholder="Your job title"><span class="opt" id="hint-title" style="font-size:13.5px;" hidden></span></label>
-        <label for="f-div"><span id="lbl-div">Division or unit</span><input id="f-div" type="text" autocomplete="off" placeholder="For example: Technology Support &amp; Information Management Unit (TSIMU)"><span class="opt" id="hint-div" style="font-size:13.5px;">Write the full name, for example: Technology Support &amp; Information Management Unit (TSIMU)</span></label>
+        <label for="f-divsel"><span id="lbl-div">Division</span><select id="f-divsel"><option value="">Choose your division</option><optgroup label="ADMIN"><option value="Administration Office (Admin)">Administration Office (Admin)</option><option value="Kiribati Quality Assurance (KQA)">Kiribati Quality Assurance (KQA)</option><option value="Teacher Registration Office (TR)">Teacher Registration Office (TR)</option></optgroup><optgroup label="MOEHQ"><option value="School Improvement Unit (SIU-ECCE)">School Improvement Unit (SIU-ECCE)</option><option value="School Improvement Unit (SIU-Primary)">School Improvement Unit (SIU-Primary)</option><option value="School Improvement Unit (SIU-JSS)">School Improvement Unit (SIU-JSS)</option><option value="School Improvement Unit (SIU-SSS)">School Improvement Unit (SIU-SSS)</option><option value="Policy, Planning, Research and Development Division (PPRD)">Policy, Planning, Research and Development Division (PPRD)</option><option value="Technology Support &amp; Information Management Unit (TSIMU)">Technology Support &amp; Information Management Unit (TSIMU)</option><option value="Facility Management Unit (FMU)">Facility Management Unit (FMU)</option><option value="Registry Office">Registry Office</option><option value="Account Office">Account Office</option></optgroup><optgroup label="Other MOE Divisions"><option value="Kiribati National Library &amp; Archive (KNLA)">Kiribati National Library &amp; Archive (KNLA)</option><option value="Curriculum Development and Resource Centre (CDRC)">Curriculum Development and Resource Centre (CDRC)</option><option value="Examination &amp; Assessment Unit (EAU)">Examination &amp; Assessment Unit (EAU)</option><option value="Kiribati Teachers College (KTC)">Kiribati Teachers College (KTC)</option></optgroup><option value="other">Other (type it below)</option></select><span class="opt" id="hint-div" style="font-size:13.5px;">Choose your division from the list.</span></label>
+        <label for="f-divother" id="divother-wrap" hidden>Type your division<input id="f-divother" type="text" autocomplete="off" placeholder="Write the full name of your division"></label>
         <label for="f-loc">Office location<select id="f-loc"><option value="Bikenibeu">Bikenibeu, Tarawa (Ministry headquarters)</option><option value="Bairiki">Bairiki, Tarawa</option><option value="other">Somewhere else (type it below)</option></select></label>
         <label for="f-locother" id="locother-wrap" hidden>Type your office location<input id="f-locother" type="text" autocomplete="off" placeholder="For example: Betio, Tarawa"><span class="opt" style="font-size:13.5px;">Kiribati is added at the end for you.</span></label>
         <div class="pair">
@@ -259,7 +260,7 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
   var PLACEHOLDER = '<span style="font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;color:#999999;">MOE LOGO</span>';
   var NAVY = '#1F3864', RED = '#C00000', GOLD = '#C99A1A', SLATE = '#3A4658', INK = '#2A3A50', GREY = '#5F6B7A', PIPE = '#9AA3AF', WHITE = '#FFFFFF';
   var F = 'font-family:Arial,Helvetica,sans-serif;';
-  var ids = ['name', 'title', 'div', 'loc', 'locother', 'mobile', 'office', 'email', 'quote'];
+  var ids = ['name', 'title', 'divsel', 'divother', 'loc', 'locother', 'mobile', 'office', 'email', 'quote'];
   var KEY = 'moe-staff-signature';
 
   /* Three designs, one per role. Sizes step down from TSIMU (640 px, prepared by TSIMU, not on this page):
@@ -270,25 +271,22 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
       name: 'Executive Member', width: 520, logo: 'moe-logo-em.png', logoPx: 120,
       titlePh: 'For example: Director',
       titleHint: 'Write your full position, for example: Deputy Secretary or Director.',
-      divLabel: 'Division or responsibility',
-      divPh: 'For example: Policy, Planning, Research and Development Division (PPRD)',
-      divHint: 'Write the full name, for example: Policy, Planning, Research and Development Division (PPRD)'
+      divLabel: 'Division',
+      divHint: 'Choose your division from the list.'
     },
     hod: {
       name: 'Head of Department', width: 500, logo: 'moe-logo-hod.png', logoPx: 105,
       titlePh: 'Your job title',
       titleHint: 'Write your full job title as it appears on Ministry documents.',
-      divLabel: 'Department, division or unit you lead',
-      divPh: 'For example: School Improvement Unit (SIU)',
-      divHint: 'Write the full name, for example: School Improvement Unit (SIU)'
+      divLabel: 'Division',
+      divHint: 'Choose your division from the list.'
     },
     staff: {
       name: 'Staff', width: 480, logo: 'moe-logo.png', logoPx: 90,
       titlePh: 'Your job title',
       titleHint: '',
-      divLabel: 'Division or unit',
-      divPh: 'For example: Technology Support & Information Management Unit (TSIMU)',
-      divHint: 'Write the full name, for example: Technology Support & Information Management Unit (TSIMU)'
+      divLabel: 'Division',
+      divHint: 'Choose your division from the list.'
     }
   };
   function logoURL(role) { return HOSTED ? new URL(ROLES[role].logo, location.href).href : ROLES[role].logo; }
@@ -314,6 +312,7 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
     var d = {}; ids.forEach(function (k) { d[k] = val(k); });
     if (d.mobile === '+686') d.mobile = '';
     if (d.office === '+686') d.office = '';
+    d.div = d.divsel === 'other' ? d.divother : d.divsel;
     d.role = getRole();
     return d;
   }
@@ -349,7 +348,7 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
   function sigEM(d, forCopy) {
     var t = '<div style="' + F + 'font-size:18px;line-height:23px;font-weight:bold;">' + c(NAVY, esc(d.name || 'Your full name')) + '</div>' +
       '<div style="' + F + 'font-size:11px;line-height:17px;font-weight:bold;letter-spacing:1.2px;padding-top:1px;">' + c(RED, esc((d.title || 'Your job title').toUpperCase()), 'letter-spacing:1.2px;') + '</div>' +
-      '<div style="' + F + 'font-size:12px;line-height:18px;padding-top:4px;">' + c(SLATE, esc(d.div || 'Your division or responsibility')) + '</div>' +
+      '<div style="' + F + 'font-size:12px;line-height:18px;padding-top:4px;">' + c(SLATE, esc(d.div || 'Your division')) + '</div>' +
       '<div style="' + F + 'font-size:12px;line-height:18px;font-weight:bold;">' + c(NAVY, 'Ministry of Education') + c(GOLD, '&nbsp;&nbsp;|&nbsp;&nbsp;', 'font-weight:normal;') + c(NAVY, 'Government of Kiribati') + '</div>' +
       '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:8px 0 7px 0;"><tr><td width="36" style="width:36px;border-top:2px solid ' + GOLD + ';font-size:1px;line-height:1px;">&nbsp;</td></tr></table>' +
       contactRows(d, 20);
@@ -380,7 +379,7 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
     }
     var t = '<div style="' + F + 'font-size:17px;line-height:22px;font-weight:bold;">' + c(NAVY, esc(d.name || 'Your full name')) + '</div>' +
       '<div style="' + F + 'font-size:12px;line-height:18px;font-weight:bold;">' + c(RED, esc(d.title || 'Your job title')) + '</div>' +
-      '<div style="' + F + 'font-size:12.5px;line-height:18px;font-weight:bold;padding-top:2px;">' + c(NAVY, esc(d.div || 'Your department, division or unit')) + '</div>' +
+      '<div style="' + F + 'font-size:12.5px;line-height:18px;font-weight:bold;padding-top:2px;">' + c(NAVY, esc(d.div || 'Your division')) + '</div>' +
       '<div style="' + F + 'font-size:12px;line-height:18px;padding-bottom:6px;">' + c(SLATE, 'Ministry of Education') + c(RED, '&nbsp;&nbsp;|&nbsp;&nbsp;') + c(SLATE, 'Government of Kiribati') + '</div>' +
       contactRows(d, 18);
     return '' +
@@ -416,7 +415,7 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
 
     var t = '<div style="' + F + 'font-size:16px;line-height:21px;font-weight:bold;">' + c(NAVY, esc(name)) + '</div>' +
       '<div style="' + F + 'font-size:12px;line-height:18px;font-weight:bold;">' + c(RED, esc(title)) + '</div>' +
-      '<div style="' + F + 'font-size:12px;line-height:18px;">' + c(SLATE, esc(d.div || 'Your division or unit')) + '</div>' +
+      '<div style="' + F + 'font-size:12px;line-height:18px;">' + c(SLATE, esc(d.div || 'Your division')) + '</div>' +
       '<div style="' + F + 'font-size:12px;line-height:18px;font-weight:bold;padding-bottom:6px;">' + c(NAVY, 'Ministry of Education') + c(PIPE, '&nbsp;&nbsp;|&nbsp;&nbsp;', 'font-weight:normal;') + c(NAVY, 'Government of Kiribati') + '</div>' +
       '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">' + rows + '</table>';
 
@@ -471,7 +470,6 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
     document.getElementById('f-title').placeholder = R.titlePh;
     var th = document.getElementById('hint-title'); th.textContent = R.titleHint; th.hidden = !R.titleHint;
     document.getElementById('lbl-div').textContent = R.divLabel;
-    document.getElementById('f-div').placeholder = R.divPh;
     document.getElementById('hint-div').textContent = R.divHint;
     document.getElementById('logo-file-name').textContent = R.logo;
     document.getElementById('design-label').innerHTML = '<strong>' + R.name + '</strong> design';
@@ -479,6 +477,7 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
 
   function render() {
     document.getElementById('locother-wrap').hidden = val('loc') !== 'other';
+    document.getElementById('divother-wrap').hidden = val('divsel') !== 'other';
     applyRole(getRole());
     var d = data();
     document.getElementById('sig-preview').innerHTML = sigHTML(d, false);
@@ -491,6 +490,11 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
   var saved = null;
   try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (err) { saved = null; }
   var start = saved || PREFILL || {};
+  /* Details saved before the Division list: put a typed division into the list, or under Other. */
+  if (start.div && !start.divsel) {
+    var known = Array.prototype.some.call(document.getElementById('f-divsel').options, function (o) { return o.value && o.value !== 'other' && o.value === start.div; });
+    if (known) { start.divsel = start.div; } else { start.divsel = 'other'; start.divother = start.div; }
+  }
   ids.forEach(function (k) {
     var el = document.getElementById('f-' + k);
     if (start[k]) el.value = start[k];
@@ -500,6 +504,7 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
   /* A link can choose the role for people, for example .../signature/?role=em or ?role=hod. Otherwise the last role used, or Staff. */
   var linkRole = null;
   try { linkRole = (new URLSearchParams(location.search).get('role') || '').toLowerCase(); } catch (err) { linkRole = null; }
+  if (document.getElementById('f-divsel').selectedIndex < 0) document.getElementById('f-divsel').value = '';
   setRole(ROLES[linkRole] ? linkRole : (start.role || 'staff'));
   render();
 
@@ -551,11 +556,12 @@ ol.steps.abc > li::before { content: counter(s, upper-alpha); }
     say(document.getElementById('st-sig'), opened ? 'Copied. Gmail is opening in a new tab. Follow step 4.' : 'Copied. Follow step 4.', 'ok');
   }
 
-  var REQUIRED = ['name', 'title', 'div', 'email'];
+  var REQUIRED = ['name', 'title', 'divsel', 'email'];
   function checkRequired() {
     var missing = REQUIRED.filter(function (k) { return !val(k); });
+    if (val('divsel') === 'other' && !val('divother')) missing.push('divother');
     if (val('loc') === 'other' && !val('locother')) missing.push('locother');
-    REQUIRED.concat(['locother']).forEach(function (k) { document.getElementById('f-' + k).classList.toggle('missing', missing.indexOf(k) >= 0); });
+    REQUIRED.concat(['divother', 'locother']).forEach(function (k) { document.getElementById('f-' + k).classList.toggle('missing', missing.indexOf(k) >= 0); });
     if (missing.length) {
       say(document.getElementById('st-sig'), 'Please fill in the boxes marked in red in step 2 first.', 'bad');
       document.getElementById('f-' + missing[0]).focus();
